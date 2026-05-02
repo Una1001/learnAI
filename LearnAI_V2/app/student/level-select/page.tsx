@@ -3,7 +3,8 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Image from "next/image"
 
 interface Period {
@@ -43,6 +44,7 @@ const periods: Period[] = [
 ]
 
 export default function LevelSelectPage() {
+  const router = useRouter()
   const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null)
   const [hoveredPeriod, setHoveredPeriod] = useState<string | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
@@ -51,6 +53,16 @@ export default function LevelSelectPage() {
     setSelectedPeriod(periodId)
     setIsTransitioning(true)
   }
+
+  // 轉場動畫顯示 3 秒後，跳到 story-intro
+  useEffect(() => {
+    if (isTransitioning && selectedPeriod) {
+      const timer = setTimeout(() => {
+        router.push(`/student/story-intro?period=${selectedPeriod}`)
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [isTransitioning, selectedPeriod, router])
 
   return (
     <main
@@ -232,27 +244,7 @@ export default function LevelSelectPage() {
         )}
       </AnimatePresence>
 
-      {/* 導向到故事介紹頁面 */}
-      {selectedPeriod && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <Link
-            href={`/student/story-intro?period=${selectedPeriod}`}
-            onClick={(e) => {
-              // 只有在轉場完成後才跳轉
-              setTimeout(() => {
-                window.location.href = `/student/story-intro?period=${selectedPeriod}`
-              }, 600)
-            }}
-            style={{ display: "none" }}
-          >
-            Navigate
-          </Link>
-        </motion.div>
-      )}
+      
     </main>
   )
 }
