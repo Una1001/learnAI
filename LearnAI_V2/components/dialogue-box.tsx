@@ -102,13 +102,12 @@ export function DialogueBox({
         </div>
       </div>
       
-      {/* Speech bubble tail */}
-      <div className="flex justify-center -mt-1">
+      {/* Speech bubble tail - pointing left to avatar */}
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2">
         <div className={cn(
           "w-6 h-6 rotate-45",
           "bg-card",
-          "border-r-2 border-b-2 border-border/50",
-          "-mt-3"
+          "border-l-2 border-t-2 border-border/50"
         )} />
       </div>
     </motion.div>
