@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 
 export default function TeacherDashboard() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-green-100 to-green-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card/80 backdrop-blur-sm border-b border-border">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -54,7 +54,7 @@ export default function TeacherDashboard() {
           ].map((stat, i) => (
             <div 
               key={i}
-              className="bg-card rounded-2xl border border-border p-4 flex items-center gap-4"
+              className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4 shadow-sm"
             >
               <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
                 <stat.icon className={`w-6 h-6 ${stat.color}`} />
@@ -95,7 +95,7 @@ export default function TeacherDashboard() {
             {/* Recent Activity */}
             <div className="mt-8">
               <h3 className="text-lg font-semibold text-foreground mb-4">最近活動</h3>
-              <div className="bg-card rounded-2xl border border-border divide-y divide-border">
+              <div className="bg-white rounded-2xl border border-border divide-y divide-border shadow-sm">
                 {[
                   { student: "小明", action: "完成了與劉銘傳的對話", time: "5 分鐘前", score: "+50 XP" },
                   { student: "小華", action: "提出了一個深度問題", time: "12 分鐘前", score: "+30 XP" },

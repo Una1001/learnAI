@@ -29,7 +29,7 @@ export function AIAvatar({
       animate={{ y: 0, opacity: 1 }}
       className={cn("flex flex-col items-center gap-4", className)}
     >
-      {/* Avatar Card - Storybook style */}
+      {/* Avatar without card frame */}
       <div className="relative">
         {/* Outer glow when speaking */}
         {isSpeaking && (
@@ -42,18 +42,8 @@ export function AIAvatar({
         
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className={cn(
-            "relative w-36 h-44 md:w-44 md:h-52 rounded-3xl overflow-hidden",
-            "bg-gradient-to-b from-secondary/60 to-secondary/30",
-            "border-4 border-card",
-            "shadow-[0_8px_30px_rgba(0,0,0,0.1)]",
-            "transition-all duration-300",
-            isSpeaking && "ring-4 ring-primary/30 ring-offset-4 ring-offset-background"
-          )}
+          className="relative w-36 h-44 md:w-44 md:h-52 transition-all duration-300"
         >
-          {/* Card shine effect */}
-          <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-white/40 to-transparent" />
-          
           {/* Liu Mingchuan illustration - Qing dynasty official */}
           <div className="absolute inset-0 flex items-center justify-center pt-4">
             <svg
