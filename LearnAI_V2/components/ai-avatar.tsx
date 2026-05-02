@@ -42,13 +42,13 @@ export function AIAvatar({
         
         <motion.div
           whileHover={{ scale: 1.02 }}
-          className="relative w-36 h-44 md:w-44 md:h-52 transition-all duration-300"
+          className="relative w-48 h-60 md:w-56 md:h-72 transition-all duration-300"
         >
           {/* Liu Mingchuan illustration - Qing dynasty official */}
           <div className="absolute inset-0 flex items-center justify-center pt-4">
             <svg
               viewBox="0 0 100 120"
-              className="w-28 h-36 md:w-36 md:h-44"
+              className="w-40 h-52 md:w-48 md:h-60"
               fill="none"
             >
               {/* Face */}

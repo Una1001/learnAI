@@ -30,6 +30,7 @@ export function KnowledgeCard({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/40 z-40"
+            onClick={onClose}
           />
           
           {/* Card Container */}

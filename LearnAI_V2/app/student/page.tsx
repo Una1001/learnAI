@@ -3,14 +3,13 @@
 import { useState, useEffect, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
 import { AIAvatar } from "@/components/ai-avatar"
-import { GameHUD } from "@/components/game-hud"
 import { DialogueBox } from "@/components/dialogue-box"
 import { VoiceButton } from "@/components/voice-button"
 import { StoryNavigation } from "@/components/story-navigation"
 import { KnowledgeCard } from "@/components/knowledge-card"
 import { FeedbackToast } from "@/components/feedback-toast"
 import Link from "next/link"
-import { Settings, ArrowLeft } from "lucide-react"
+import { ArrowLeft, Heart } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function StudentInterface() {
@@ -18,8 +17,9 @@ export default function StudentInterface() {
   const period = searchParams?.get("period") || "qing"
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isListening, setIsListening] = useState(false)
-  const [trust, setTrust] = useState(3)
+  const [trust, setTrust] = useState(4)
   const [storyProgress, setStoryProgress] = useState(40)
+  
   const [currentDialogue, setCurrentDialogue] = useState(
     "如果你要運送大批茶葉，走山路很累，你會希望有什麼發明？"
   )
@@ -89,7 +89,7 @@ export default function StudentInterface() {
   }
 
   return (
-    <main className="min-h-screen bg-background relative overflow-hidden">
+    <main className="min-h-screen bg-background relative overflow-hidden flex flex-col">
       {/* Feedback Toast */}
       <FeedbackToast 
         message={encouragementMessage}
@@ -104,52 +104,66 @@ export default function StudentInterface() {
         <div className="absolute bottom-40 left-1/4 w-48 h-48 bg-secondary/40 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 flex flex-row w-full h-screen">
-        {/* Left Sidebar */}
-        <aside className="w-80 bg-card/50 border-r border-border/50 px-6 py-6 flex flex-col gap-6 overflow-y-auto">
-          {/* Home button */}
-          <Link 
-            href="/student/level-select"
-            className="p-3 rounded-2xl bg-card hover:bg-card/80 border border-border/50 shadow-sm transition-all flex items-center justify-center gap-2"
-            aria-label="返回關卡選擇"
-          >
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">返回關卡選擇</span>
-          </Link>
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
+        {/* Navbar */}
+        <header className="w-full border-b border-border/50 bg-card/70 backdrop-blur-md shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center gap-4">
+            <Link 
+              href="/student/level-select"
+              className="shrink-0 p-3 rounded-2xl bg-card hover:bg-card/80 border border-border/50 shadow-sm transition-all flex items-center justify-center gap-2"
+              aria-label="返回關卡選擇"
+            >
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+              <span className="hidden sm:inline text-sm font-medium text-muted-foreground">返回關卡選擇</span>
+            </Link>
 
-          {/* Header in sidebar */}
-          <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-2xl font-bold text-foreground"
-          >
-            時空冒險導師
-          </motion.h1>
+            <div className="flex-1 text-center">
+              <motion.p
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-sm font-medium text-muted-foreground"
+              >
+                時空冒險導師
+              </motion.p>
+              <motion.h1
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-lg sm:text-2xl font-bold text-foreground"
+              >
+                台灣清領時期 - 鐵路篇
+              </motion.h1>
+            </div>
 
-          {/* Story Navigation */}
-          <StoryNavigation 
-            era="台灣清領時期"
-            chapter="鐵路篇"
-            progress={storyProgress}
-            totalSteps={5}
-          />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="shrink-0 p-3 rounded-2xl bg-card/50 hover:bg-card/70 border border-amber-200/30 shadow-sm transition-all flex items-center justify-center gap-2"
+            >
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Heart
+                    key={i}
+                    className={i < trust ? "w-5 h-5 text-rose-400 drop-shadow-[0_0_4px_rgba(251,113,133,0.5)]" : "w-5 h-5 text-muted-foreground/20"}
+                    fill={i < trust ? "currentColor" : "none"}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </header>
 
-          {/* Teacher Link */}
-          <Link 
-            href="/teacher"
-            className="mt-auto p-3 rounded-2xl bg-card hover:bg-card/80 border border-border/50 shadow-sm transition-all flex items-center justify-center gap-2"
-            aria-label="老師後台"
-          >
-            <Settings className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-medium text-muted-foreground">老師後台</span>
-          </Link>
-        </aside>
-
-        {/* Main content area */}
+        {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Main content */}
-          <div className="flex-1 flex flex-row items-center justify-center gap-8 px-8 py-6 overflow-auto">
-            {/* AI Avatar - Liu Mingchuan */}
+          <div className="px-4 sm:px-6 pt-6">
+            <StoryNavigation 
+              era="台灣清領時期"
+              chapter="鐵路篇"
+              progress={storyProgress}
+              totalSteps={5}
+            />
+          </div>
+
+          <div className="flex-1 flex flex-row flex-wrap items-center justify-center gap-8 px-4 sm:px-8 py-6 overflow-auto">
             <AIAvatar 
               name="劉銘傳" 
               nameZhuyin={["ㄌㄧㄡˊ", "ㄇㄧㄥˊ", "ㄔㄨㄢˊ"]}
@@ -158,7 +172,6 @@ export default function StudentInterface() {
               isListening={isListening}
             />
 
-            {/* Dialogue Box - positioned to the right of avatar */}
             <DialogueBox 
               speaker=""
               message={currentDialogue}
@@ -166,7 +179,6 @@ export default function StudentInterface() {
               className="flex-shrink-0"
             />
 
-            {/* Knowledge Card */}
             <KnowledgeCard
               title={knowledgeData.title}
               content={knowledgeData.content}
@@ -174,7 +186,6 @@ export default function StudentInterface() {
               onClose={() => setShowKnowledge(false)}
             />
 
-            {/* Listening indicator */}
             {isListening && (
               <motion.div 
                 initial={{ opacity: 0, y: 10 }}
@@ -196,8 +207,7 @@ export default function StudentInterface() {
             )}
           </div>
 
-          {/* Voice Button */}
-          <footer className="px-8 py-6 border-t border-border/50 bg-card/30">
+          <footer className="px-4 sm:px-8 py-6 bg-transparent">
             <VoiceButton 
               onPress={handleVoicePress}
               onRelease={handleVoiceRelease}

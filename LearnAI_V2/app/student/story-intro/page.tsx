@@ -1,9 +1,9 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Volume } from "lucide-react"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import { TransitionCurtain } from "@/components/transition-curtain"
 
@@ -48,6 +48,8 @@ export default function StoryIntroPage() {
   const periodId = searchParams.get("period") || "qing"
   const [isCardVisible, setIsCardVisible] = useState(false)
   const [hasAcknowledged, setHasAcknowledged] = useState(false)
+  const router = useRouter()
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
   const story = storiesByPeriod[periodId] || storiesByPeriod.qing
 
@@ -59,13 +61,19 @@ export default function StoryIntroPage() {
     return () => clearTimeout(timer)
   }, [])
 
+  // 清理 TTS
+  useEffect(() => {
+    return () => {
+      if (typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [])
+
   const handleContinue = () => {
     setHasAcknowledged(true)
-    // 動畫完成後導航到遊戲頁面
-    setTimeout(() => {
-      // 使用 startTransition 使導航更流暢
-      window.location.href = `/student?period=${periodId}`
-    }, 600)
+    // 立即導航到遊戲頁面
+    router.push(`/student?period=${periodId}`)
   }
 
   return (
@@ -78,8 +86,6 @@ export default function StoryIntroPage() {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* 過渡幕簾 */}
-      <TransitionCurtain isActive={hasAcknowledged} direction="out" duration={0.5} />
       {/* 暗色遮罩層 */}
       <div className="absolute inset-0 bg-black/40" />
 
@@ -202,49 +208,42 @@ export default function StoryIntroPage() {
                   </motion.p>
                 </motion.div>
 
-                {/* 右下角按鈕 */}
-                <motion.div
-                  className="absolute bottom-6 right-6"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1.2, duration: 0.4 }}
-                >
-                  <motion.button
-                    onClick={handleContinue}
-                    disabled={hasAcknowledged}
-                    className="
-                      flex items-center gap-2
-                      px-6 py-3 rounded-full
-                      bg-gradient-to-r from-blue-500 to-cyan-500
-                      hover:from-blue-600 hover:to-cyan-600
-                      text-white font-bold
-                      shadow-lg
-                      transition-all duration-300
-                      disabled:opacity-50
-                    "
-                    whileHover={!hasAcknowledged ? { scale: 1.1 } : {}}
-                    whileTap={!hasAcknowledged ? { scale: 0.95 } : {}}
-                    animate={!hasAcknowledged ? { y: [0, 3, 0] } : {}}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <span>我知道了</span>
-                    <ChevronRight className="w-5 h-5" />
-                  </motion.button>
-                </motion.div>
+                {/* 按鈕已移至頁面底部，以利一致的使用者操作 */}
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* 背景故事提示文字 */}
+        {/* 固定在頁面底部的開始按鈕（置中） */}
         <motion.div
-          className="text-center mt-20 text-white/50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2, duration: 0.8 }}
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2, duration: 0.5 }}
         >
-          <p className="text-sm">點擊「我知道了」準備開始冒險...</p>
+          <motion.button
+            onClick={handleContinue}
+            disabled={hasAcknowledged}
+            aria-label="開始關卡"
+            className={`
+              flex items-center gap-2
+              px-6 py-3 rounded-full
+              bg-gradient-to-r from-orange-200 to-orange-300
+              hover:from-orange-300 hover:to-orange-400
+              text-black font-bold
+              shadow-lg
+              transition-all duration-300
+              disabled:opacity-50
+            `}
+            whileHover={!hasAcknowledged ? { scale: 1.05 } : {}}
+            whileTap={!hasAcknowledged ? { scale: 0.95 } : {}}
+          >
+            <span>我知道了</span>
+            <ChevronRight className="w-5 h-5" />
+          </motion.button>
         </motion.div>
+
+        {/* 背景故事提示文字（已移除：使用更乾淨的介面） */}
       </div>
 
       {/* 返回主選單按鈕 */}
@@ -263,6 +262,42 @@ export default function StoryIntroPage() {
             ← 返回
           </motion.button>
         </Link>
+      </motion.div>
+
+      {/* 右下角播音按鈕 */}
+      <motion.div
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1.0 }}
+      >
+        <motion.button
+          onClick={() => {
+            if (typeof window === "undefined" || !window.speechSynthesis) return
+            if (!isSpeaking) {
+              const utter = new SpeechSynthesisUtterance(story.content)
+              utter.lang = "zh-TW"
+              utter.onend = () => setIsSpeaking(false)
+              utter.onerror = () => setIsSpeaking(false)
+              window.speechSynthesis.cancel()
+              window.speechSynthesis.speak(utter)
+              setIsSpeaking(true)
+            } else {
+              window.speechSynthesis.cancel()
+              setIsSpeaking(false)
+            }
+          }}
+          className={`
+            flex items-center gap-2 px-4 py-3 rounded-full
+            bg-white/10 hover:bg-white/20 text-white
+            backdrop-blur-sm border border-white/20 shadow-md
+            transition-colors duration-200
+          `}
+          aria-pressed={isSpeaking}
+        >
+          <Volume className="w-5 h-5" />
+          <span className="text-sm font-medium">{isSpeaking ? "停止播音" : "播音"}</span>
+        </motion.button>
       </motion.div>
     </main>
   )

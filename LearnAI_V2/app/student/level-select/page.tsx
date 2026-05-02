@@ -1,11 +1,10 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 import Link from "next/link"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
 
 interface Period {
   id: string
@@ -21,48 +20,37 @@ const periods: Period[] = [
     id: "qing",
     name: "清領時期",
     description: "18世紀 - 19世紀",
-    color: "from-amber-600/40 to-amber-700/40",
-    textColor: "text-amber-100",
-    borderColor: "border-amber-400/50",
+    color: "from-sky-400/30 to-sky-500/30",
+    textColor: "text-sky-100",
+    borderColor: "border-sky-300/40",
   },
   {
     id: "dutch",
     name: "荷蘭統治時期",
     description: "17世紀",
-    color: "from-orange-600/40 to-orange-700/40",
-    textColor: "text-orange-100",
-    borderColor: "border-orange-400/50",
+    color: "from-emerald-400/28 to-emerald-500/32",
+    textColor: "text-emerald-100",
+    borderColor: "border-emerald-300/40",
   },
   {
     id: "japanese",
     name: "日治時期",
     description: "20世紀初",
-    color: "from-red-600/40 to-red-700/40",
-    textColor: "text-red-100",
-    borderColor: "border-red-400/50",
+    color: "from-emerald-200/20 to-emerald-300/24",
+    textColor: "text-emerald-50",
+    borderColor: "border-emerald-200/30",
   },
 ]
 
 export default function LevelSelectPage() {
   const router = useRouter()
-  const [selectedPeriod, setSelectedPeriod] = useState<string | null>(null)
   const [hoveredPeriod, setHoveredPeriod] = useState<string | null>(null)
-  const [isTransitioning, setIsTransitioning] = useState(false)
 
   const handlePeriodSelect = (periodId: string) => {
-    setSelectedPeriod(periodId)
-    setIsTransitioning(true)
+    router.push(`/student/story-intro?period=${periodId}`)
   }
 
-  // 轉場動畫顯示 3 秒後，跳到 story-intro
-  useEffect(() => {
-    if (isTransitioning && selectedPeriod) {
-      const timer = setTimeout(() => {
-        router.push(`/student/story-intro?period=${selectedPeriod}`)
-      }, 3000)
-      return () => clearTimeout(timer)
-    }
-  }, [isTransitioning, selectedPeriod, router])
+  // 直接導向至 story-intro，不使用中間轉場覆蓋層
 
   return (
     <main
@@ -213,36 +201,6 @@ export default function LevelSelectPage() {
           </Link>
         </motion.div>
       </motion.div>
-
-      {/* 轉場效果 - Simple.png 圖片轉場 */}
-      <AnimatePresence>
-        {isTransitioning && selectedPeriod && (
-          <motion.div
-            key="transition-overlay"
-            className="fixed inset-0 z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <motion.div
-              className="absolute inset-0"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            >
-              <Image
-                src="/simple.png"
-                alt="transition"
-                fill
-                className="object-cover"
-                priority
-              />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       
     </main>

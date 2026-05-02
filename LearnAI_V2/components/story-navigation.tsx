@@ -45,9 +45,6 @@ export function StoryNavigation({
           </div>
           <div>
             <p className="text-sm text-muted-foreground font-medium">冒險進度</p>
-            <p className="text-lg font-bold text-foreground">
-              {era} - {chapter}
-            </p>
           </div>
         </div>
         
