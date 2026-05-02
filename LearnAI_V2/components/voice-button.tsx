@@ -11,14 +11,20 @@ interface VoiceButtonProps {
   onRelease?: () => void
   onTextSubmit?: (text: string) => void
   className?: string
+  /** 測試用：按下麥克風後自動填入此預設答案到輸入框 */
+  testAnswer?: string
 }
 
-export function VoiceButton({ onPress, onRelease, onTextSubmit, className }: VoiceButtonProps) {
+export function VoiceButton({ onPress, onRelease, onTextSubmit, className, testAnswer }: VoiceButtonProps) {
   const [isPressed, setIsPressed] = useState(false)
   const [textInput, setTextInput] = useState("")
   
   const handlePress = () => {
     setIsPressed(true)
+    // 測試用：若有 testAnswer 則直接填入輸入框
+    if (testAnswer) {
+      setTextInput(testAnswer)
+    }
     onPress?.()
   }
   

@@ -202,6 +202,7 @@ export default function StudentInterface() {
               onPress={handleVoicePress}
               onRelease={handleVoiceRelease}
               onTextSubmit={handleTextSubmit}
+              testAnswer="我想要一台有噴射背包的搬運機器人！"
             />
           </footer>
         </div>
