@@ -32,7 +32,6 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
           const entry = byRank.get(rank)
           const isChampion = rank === 1
           const blockHeight = rank === 1 ? "h-44 md:h-52" : rank === 2 ? "h-32 md:h-40" : "h-28 md:h-36"
-          const crown = rank === 1 ? "👑" : ""
 
           return (
             <motion.div
@@ -48,33 +47,54 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
                 transition={{ delay: 0.55 + index * 0.12, duration: 0.4 }}
                 className="mb-3 flex justify-center"
               >
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-xl border border-amber-100/50 bg-amber-200/30 text-3xl shadow-[0_0_20px_rgba(251,191,36,0.35)] backdrop-blur-sm md:h-20 md:w-20 md:text-4xl">
-                  <span className="font-mono leading-none">🏆</span>
-                  {crown ? (
-                    <span className="absolute -top-4 text-xl md:text-2xl">{crown}</span>
-                  ) : null}
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-white/25 text-3xl shadow-[0_0_20px_rgba(255,255,255,0.45)] backdrop-blur-sm md:h-20 md:w-20 md:text-4xl">
+                  {isChampion ? (
+                    <motion.span
+                      animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
+                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      className="drop-shadow-[0_0_10px_rgba(251,191,36,0.85)]"
+                    >
+                      💖
+                    </motion.span>
+                  ) : (
+                    <span className="font-mono leading-none">🏆</span>
+                  )}
                 </div>
               </motion.div>
 
               <div className="mb-2 text-center">
-                <p className="text-sm font-bold text-white md:text-base">{entry?.name ?? `TOP ${rank}`}</p>
-                <p className="text-xs text-white/80">{entry ? `${entry.score.toLocaleString()} pts` : "-"}</p>
+                <p className="text-sm font-bold text-white md:text-base" style={{ textShadow: "0 1px 2px rgba(15,23,42,0.8)" }}>
+                  {entry?.name ?? `TOP ${rank}`}
+                </p>
+                <p className="text-xs text-white/90" style={{ textShadow: "0 1px 2px rgba(15,23,42,0.8)" }}>
+                  {entry ? `${entry.score.toLocaleString()} pts` : "-"}
+                </p>
               </div>
 
-              <div
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3 + index * 0.35, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
                 className={[
-                  "relative overflow-hidden rounded-t-2xl border border-white/30",
-                  "bg-gradient-to-b from-sky-200/35 to-blue-500/45",
-                  "shadow-[inset_0_1px_0_rgba(255,255,255,0.45),0_18px_35px_rgba(2,6,23,0.35)]",
-                  "backdrop-blur-md",
+                  "relative overflow-hidden rounded-[2.2rem] border border-emerald-100/50",
+                  "bg-gradient-to-b from-lime-200/35 via-amber-200/30 to-amber-700/45",
+                  "shadow-[inset_0_2px_0_rgba(255,255,255,0.55),0_16px_28px_rgba(2,6,23,0.35)]",
+                  "backdrop-blur-sm",
                   blockHeight,
                 ].join(" ")}
               >
-                <div className="absolute inset-x-0 top-0 h-2 bg-white/35" />
-                <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.18)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.18)_50%,rgba(255,255,255,0.18)_75%,transparent_75%,transparent)] bg-[length:22px_22px] opacity-30" />
-                <div className="absolute inset-x-0 bottom-4 text-center text-4xl md:text-5xl">{entry?.avatar ?? "🏅"}</div>
-                <div className="absolute inset-x-0 bottom-2 text-center font-black text-white">#{rank}</div>
-              </div>
+                <div className="absolute inset-x-4 top-2 h-4 rounded-full bg-emerald-300/50 blur-[1px]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.28),transparent_32%),radial-gradient(circle_at_80%_80%,rgba(120,53,15,0.24),transparent_30%)]" />
+
+                <div className="absolute inset-x-0 bottom-9 flex justify-center">
+                  <div className="grid h-12 w-12 place-items-center rounded-full border-2 border-white/95 bg-white/35 text-2xl shadow-[0_4px_14px_rgba(15,23,42,0.4)] backdrop-blur-sm md:h-14 md:w-14 md:text-3xl">
+                    {entry?.avatar ?? "🏅"}
+                  </div>
+                </div>
+
+                <div className="absolute inset-x-0 bottom-2 text-center font-black text-white" style={{ textShadow: "0 1px 2px rgba(15,23,42,0.8)" }}>
+                  #{rank}
+                </div>
+              </motion.div>
             </motion.div>
           )
         })}
@@ -89,9 +109,11 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.7, duration: 0.5 }}
-      className="mx-auto w-full max-w-3xl rounded-3xl border border-white/30 bg-white/12 p-4 backdrop-blur-xl md:p-6"
+      className="mx-auto w-full max-w-3xl rounded-3xl bg-white/80 p-4 backdrop-blur-sm md:p-6"
     >
-      <h2 className="mb-4 text-xl font-black tracking-wide text-white md:text-2xl">排行榜</h2>
+      <h2 className="mb-4 text-xl font-black tracking-wide text-white md:text-2xl" style={{ textShadow: "0 1px 2px rgba(15,23,42,0.85)" }}>
+        排行榜
+      </h2>
 
       <div className="space-y-3">
         {entries.map((entry, index) => (
@@ -100,19 +122,37 @@ function LeaderboardList({ entries }: { entries: LeaderboardEntry[] }) {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.85 + index * 0.08, duration: 0.35 }}
-            className="group flex items-center justify-between rounded-2xl border border-white/25 bg-slate-950/20 px-4 py-3 backdrop-blur-md transition-colors hover:bg-slate-950/35"
+            className="group flex items-center justify-between rounded-2xl bg-white/80 px-4 py-3 backdrop-blur-sm transition-colors hover:bg-white/90"
           >
             <div className="flex items-center gap-3">
-              <div className="grid h-9 w-9 place-items-center rounded-lg bg-white/20 font-bold text-white">#{entry.rank}</div>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl font-extrabold text-slate-800">{entry.rank}</div>
+                <div className="text-lg">🏅</div>
+              </div>
+              <div className="grid h-10 w-10 place-items-center rounded-full border-2 border-white/95 bg-white/30 text-xl shadow-[0_3px_10px_rgba(15,23,42,0.35)] backdrop-blur-sm">
+                {entry.avatar}
+              </div>
               <div>
-                <p className="font-bold text-white">{entry.name}</p>
-                <p className="text-xs text-white/70">連勝 {entry.streak} 天</p>
+                <p className="font-bold text-slate-800" style={{ textShadow: "0 1px 2px rgba(255,255,255,0.6)" }}>
+                  {entry.name}
+                </p>
+                <p className="text-xs text-slate-600" style={{ textShadow: "0 1px 2px rgba(255,255,255,0.6)" }}>
+                  連勝 {entry.streak} 天
+                </p>
               </div>
             </div>
 
             <div className="text-right">
-              <p className="text-lg font-black text-emerald-300">{entry.score.toLocaleString()}</p>
-              <p className="text-xs text-white/70">points</p>
+              <p className="flex items-center justify-end gap-1 text-lg font-black text-slate-800">
+                <motion.span
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 0.9, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: index * 0.06 }}
+                >
+                  🪙
+                </motion.span>
+                {entry.score.toLocaleString()}
+              </p>
+              <p className="text-xs text-slate-600">points</p>
             </div>
           </motion.article>
         ))}
@@ -141,8 +181,8 @@ export default function LeaderboardPage() {
           className="text-center"
         >
           <p className="mb-2 text-sm font-semibold uppercase tracking-[0.35em] text-cyan-200/90">LearnAI Arena</p>
-          <h1 className="text-4xl font-black tracking-tight text-white md:text-6xl">Leaderboard</h1>
-          <p className="mt-3 text-sm text-white/80 md:text-base">每週積分更新，挑戰你的歷史創意極限。</p>
+          <h1 className="text-4xl font-black tracking-tight text-white md:text-6xl" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>Leaderboard</h1>
+          <p className="mt-3 text-sm text-white md:text-base" style={{ textShadow: "2px 2px 4px rgba(0,0,0,0.5)" }}>每週積分更新，挑戰你的歷史創意極限。</p>
         </motion.header>
 
         <Podium entries={sortedEntries} />
