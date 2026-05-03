@@ -9,7 +9,8 @@ import { StoryNavigation } from "@/components/story-navigation"
 import { KnowledgeCard } from "@/components/knowledge-card"
 import { FeedbackToast } from "@/components/feedback-toast"
 import Link from "next/link"
-import { ArrowLeft, Heart } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft, Heart, Coins } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function StudentInterface() {
@@ -18,6 +19,7 @@ export default function StudentInterface() {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [trust, setTrust] = useState(4)
+  const [coins, setCoins] = useState(45)
   const [storyProgress, setStoryProgress] = useState(40)
   
   const [currentDialogue, setCurrentDialogue] = useState(
@@ -70,6 +72,7 @@ export default function StudentInterface() {
 
   const handleCollectCoin = () => {
     setShowEncouragement(false)
+    setCoins(coins + 1)
     
     // Step 2: Show knowledge card
     setTimeout(() => {
@@ -138,21 +141,36 @@ export default function StudentInterface() {
               </motion.h1>
             </div>
 
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="shrink-0 p-3 rounded-2xl bg-card/50 hover:bg-card/70 border border-amber-200/30 shadow-sm transition-all flex items-center justify-center gap-2"
-            >
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Heart
-                    key={i}
-                    className={i < trust ? "w-5 h-5 text-rose-400 drop-shadow-[0_0_4px_rgba(251,113,133,0.5)]" : "w-5 h-5 text-muted-foreground/20"}
-                    fill={i < trust ? "currentColor" : "none"}
-                  />
-                ))}
-              </div>
-            </motion.div>
+            <div className="flex items-center gap-3">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="shrink-0 p-3 rounded-2xl bg-card/50 hover:bg-card/70 border border-blue-200/30 shadow-sm transition-all flex items-center justify-center gap-2"
+              >
+                <Coins className="w-5 h-5 text-blue-500" />
+                <span className="text-sm font-bold text-blue-600">{coins}</span>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="shrink-0 p-3 rounded-2xl bg-card/50 hover:bg-card/70 border border-amber-200/30 shadow-sm transition-all flex items-center justify-center gap-2"
+              >
+                <div className="flex items-center gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Heart
+                      key={i}
+                      className={i < trust ? "w-5 h-5 text-rose-400 drop-shadow-[0_0_4px_rgba(251,113,133,0.5)]" : "w-5 h-5 text-muted-foreground/20"}
+                      fill={i < trust ? "currentColor" : "none"}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+
+              <Button asChild size="sm" variant="secondary">
+                <Link href="/leaderboard">查看排行</Link>
+              </Button>
+            </div>
           </div>
         </header>
 

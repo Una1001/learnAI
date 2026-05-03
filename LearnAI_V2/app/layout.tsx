@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Nunito, Noto_Sans_TC } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+// Leaderboard button moved into page-specific navbars
 
 const nunito = Nunito({ 
   subsets: ["latin"],
@@ -45,8 +46,11 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" className={`${nunito.variable} ${notoSansTC.variable}`}>
       <body className="font-sans antialiased bg-background">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
+        <div className="min-h-screen">
+          {children}
+
+          {process.env.NODE_ENV === 'production' && <Analytics />}
+        </div>
       </body>
     </html>
   )
