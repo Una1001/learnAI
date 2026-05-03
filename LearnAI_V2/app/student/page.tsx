@@ -34,7 +34,6 @@ export default function StudentInterface() {
   const showFeedback = useCallback((message: string) => {
     setEncouragementMessage(message)
     setShowEncouragement(true)
-    setTimeout(() => setShowEncouragement(false), 3000)
   }, [])
 
   // Simulate AI speaking
@@ -63,11 +62,15 @@ export default function StudentInterface() {
   }
 
   const simulateResponse = () => {
-    // Step 1: Show encouragement
+    // Step 1: Show clue with coin
     setTimeout(() => {
-      showFeedback("你觀察得太棒了！")
+      showFeedback("你找到了線索！獲得硬幣")
     }, 500)
+  }
 
+  const handleCollectCoin = () => {
+    setShowEncouragement(false)
+    
     // Step 2: Show knowledge card
     setTimeout(() => {
       setKnowledgeData({
@@ -75,7 +78,7 @@ export default function StudentInterface() {
         content: "劉銘傳在1887年開始建造台灣第一條鐵路，從基隆到台北。當時的人們第一次看到會冒煙的火車，都叫它「黑怪獸」呢！"
       })
       setShowKnowledge(true)
-    }, 2000)
+    }, 300)
 
     // Step 3: New dialogue with follow-up question
     setTimeout(() => {
@@ -85,7 +88,7 @@ export default function StudentInterface() {
       setIsTyping(true)
       setTrust(prev => Math.min(prev + 1, 5))
       setStoryProgress(prev => Math.min(prev + 20, 100))
-    }, 5000)
+    }, 2000)
   }
 
   return (
@@ -94,7 +97,8 @@ export default function StudentInterface() {
       <FeedbackToast 
         message={encouragementMessage}
         isVisible={showEncouragement}
-        type="encouragement"
+        type="clue"
+        onCollect={handleCollectCoin}
       />
       
       {/* Subtle background pattern */}
