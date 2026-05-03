@@ -8,13 +8,15 @@ interface LeaderboardEntry {
   name: string
   score: number
   avatar: string
+  portraitImage?: string
+  medal?: string
   streak: number
 }
 
 const mockLeaderboard: LeaderboardEntry[] = [
-  { id: "u1", rank: 1, name: "小宇", score: 9850, avatar: "🥇", streak: 17 },
-  { id: "u2", rank: 2, name: "阿晴", score: 9210, avatar: "🥈", streak: 14 },
-  { id: "u3", rank: 3, name: "凱文", score: 8890, avatar: "🥉", streak: 12 },
+  { id: "u1", rank: 1, name: "小宇", score: 9850, avatar: "🥇", portraitImage: "/image.png", medal: "1", streak: 17 },
+  { id: "u2", rank: 2, name: "阿晴", score: 9210, avatar: "🥈", portraitImage: "/image copy.png", medal: "2", streak: 14 },
+  { id: "u3", rank: 3, name: "凱文", score: 8890, avatar: "🥉", portraitImage: "/image copy 2.png", medal: "3", streak: 12 },
   { id: "u4", rank: 4, name: "米可", score: 8420, avatar: "⭐", streak: 10 },
   { id: "u5", rank: 5, name: "小恩", score: 8075, avatar: "🌟", streak: 9 },
   { id: "u6", rank: 6, name: "Luna", score: 7810, avatar: "✨", streak: 8 },
@@ -47,19 +49,43 @@ function Podium({ entries }: { entries: LeaderboardEntry[] }) {
                 transition={{ delay: 0.55 + index * 0.12, duration: 0.4 }}
                 className="mb-3 flex justify-center"
               >
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-white/25 text-3xl shadow-[0_0_20px_rgba(255,255,255,0.45)] backdrop-blur-sm md:h-20 md:w-20 md:text-4xl">
-                  {isChampion ? (
-                    <motion.span
-                      animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
-                      transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                      className="drop-shadow-[0_0_10px_rgba(251,191,36,0.85)]"
-                    >
-                      💖
-                    </motion.span>
-                  ) : (
-                    <span className="font-mono leading-none">🏆</span>
-                  )}
-                </div>
+                {entry?.portraitImage ? (
+                  <div className="relative">
+                    {isChampion && (
+                      <motion.span
+                        className="absolute -top-5 left-1/2 -translate-x-1/2 text-2xl md:text-3xl"
+                        animate={{ y: [0, -4, 0], rotate: [0, 8, -8, 0] }}
+                        transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      >
+                        👑
+                      </motion.span>
+                    )}
+                    <img
+                      src={entry.portraitImage}
+                      alt={entry.name}
+                      className="h-16 w-16 overflow-hidden rounded-full border-2 border-white/90 object-cover md:h-20 md:w-20"
+                    />
+                    {entry.medal && (
+                      <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-yellow-400 text-sm font-black text-white shadow-[0_2px_6px_rgba(0,0,0,0.3)] md:h-7 md:w-7">
+                        {entry.medal}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="relative flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/90 bg-white/25 text-3xl shadow-[0_0_20px_rgba(255,255,255,0.45)] backdrop-blur-sm md:h-20 md:w-20 md:text-4xl">
+                    {isChampion ? (
+                      <motion.span
+                        animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.15, 1] }}
+                        transition={{ duration: 2.2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                        className="drop-shadow-[0_0_10px_rgba(251,191,36,0.85)]"
+                      >
+                        💖
+                      </motion.span>
+                    ) : (
+                      <span className="font-mono leading-none">🏆</span>
+                    )}
+                  </div>
+                )}
               </motion.div>
 
               <div className="mb-2 text-center">
