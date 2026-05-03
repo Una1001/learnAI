@@ -128,14 +128,11 @@ export default function LeaderboardPage() {
     <main
       className="relative min-h-screen overflow-hidden px-4 py-10 md:px-8"
       style={{
-        backgroundImage:
-          "linear-gradient(160deg, rgba(8,47,73,0.65) 0%, rgba(15,23,42,0.82) 60%, rgba(30,41,59,0.9) 100%), url('/image_6c1958.jpg')",
+        backgroundImage: "url('/all_simple.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(125,211,252,0.2),transparent_35%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.16),transparent_28%)]" />
-
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 md:gap-10">
         <motion.header
           initial={{ opacity: 0, y: -20 }}
